@@ -1,0 +1,505 @@
+{
+	"info": {
+		"_postman_id": "office-saas-api-collection",
+		"name": "Office SaaS Backend API Collection",
+		"description": "Complete ready-to-use API testing collection for Internal Office SaaS Backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5000/api",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "fileId",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "employeeId",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "quotationId",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "expenseId",
+			"value": "1",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "1. Authentication",
+			"item": [
+				{
+					"name": "Login (Admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.success && jsonData.data && jsonData.data.token) {",
+									"    pm.collectionVariables.set('token', jsonData.data.token);",
+									"    console.log('Token automatically saved to collection variable!');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@office.local\",\n  \"password\": \"Admin@123456\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "Get Current Employee (/me)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/auth/me",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "me"]
+						}
+					}
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/auth/logout",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "logout"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "2. Employee Management",
+			"item": [
+				{
+					"name": "Get All Employees",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/employees",
+							"host": ["{{baseUrl}}"],
+							"path": ["employees"]
+						}
+					}
+				},
+				{
+					"name": "Create Employee",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Architect\",\n  \"email\": \"john@office.local\",\n  \"password\": \"User@123456\",\n  \"mobile\": \"9876543210\",\n  \"designation\": \"Senior Draftsman\",\n  \"role_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/employees",
+							"host": ["{{baseUrl}}"],
+							"path": ["employees"]
+						}
+					}
+				},
+				{
+					"name": "Get Employee by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/employees/{{employeeId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["employees", "{{employeeId}}"]
+						}
+					}
+				},
+				{
+					"name": "Toggle Employee Status (Deactivate)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"is_active\": false\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/employees/{{employeeId}}/status",
+							"host": ["{{baseUrl}}"],
+							"path": ["employees", "{{employeeId}}", "status"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "3. Roles",
+			"item": [
+				{
+					"name": "Get All Roles",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/roles",
+							"host": ["{{baseUrl}}"],
+							"path": ["roles"]
+						}
+					}
+				},
+				{
+					"name": "Create Role",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"DRAFTSMAN\",\n  \"description\": \"Responsible for drawing work and plans\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/roles",
+							"host": ["{{baseUrl}}"],
+							"path": ["roles"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "4. Files & Workflows",
+			"item": [
+				{
+					"name": "Create File",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.success && jsonData.data && jsonData.data.file) {",
+									"    pm.collectionVariables.set('fileId', jsonData.data.file.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"file_number\": \"FILE-1001\",\n  \"work_type\": \"Building Permission\",\n  \"applicant_name\": \"Ramesh Shah\",\n  \"applicant_address\": \"123 City Center, Station Road\",\n  \"applicant_mobile\": \"9898012345\",\n  \"revenue_survey_no\": \"RS-45\",\n  \"city_survey_no\": \"CS-102\",\n  \"tp_scheme_no\": \"TP-04\",\n  \"final_plot_no\": \"FP-12\",\n  \"plot_no\": \"Plot 15\",\n  \"permission_type\": \"Building Permission\",\n  \"floors\": \"Ground, First, Second\",\n  \"specific_built_up_area\": 2400.50\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/files",
+							"host": ["{{baseUrl}}"],
+							"path": ["files"]
+						}
+					}
+				},
+				{
+					"name": "Get All Files (Search & Filter)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/files?search=Ramesh&page=1&limit=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["files"],
+							"query": [
+								{ "key": "search", "value": "Ramesh" },
+								{ "key": "page", "value": "1" },
+								{ "key": "limit", "value": "10" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Get File by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/files/{{fileId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["files", "{{fileId}}"]
+						}
+					}
+				},
+				{
+					"name": "Change File Status (Workflow Transition)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"DRAWING_IN_PROGRESS\",\n  \"notes\": \"Assigned for drawing drafting\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/files/{{fileId}}/status",
+							"host": ["{{baseUrl}}"],
+							"path": ["files", "{{fileId}}", "status"]
+						}
+					}
+				},
+				{
+					"name": "Get File Status History",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/files/{{fileId}}/history",
+							"host": ["{{baseUrl}}"],
+							"path": ["files", "{{fileId}}", "history"]
+						}
+					}
+				},
+				{
+					"name": "Assign File to Employee",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"assigned_to\": 1,\n  \"assignment_type\": \"DRAWING\",\n  \"notes\": \"Please prepare site plan draft\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/files/{{fileId}}/assign",
+							"host": ["{{baseUrl}}"],
+							"path": ["files", "{{fileId}}", "assign"]
+						}
+					}
+				},
+				{
+					"name": "Get File Assignments",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/files/{{fileId}}/assignments",
+							"host": ["{{baseUrl}}"],
+							"path": ["files", "{{fileId}}", "assignments"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "5. Quotations & Payments",
+			"item": [
+				{
+					"name": "Create Quotation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.success && jsonData.data && jsonData.data.quotation) {",
+									"    pm.collectionVariables.set('quotationId', jsonData.data.quotation.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"quotation_number\": \"QT-2026-001\",\n  \"amount\": 75000.00,\n  \"status\": \"DRAFT\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/files/{{fileId}}/quotations",
+							"host": ["{{baseUrl}}"],
+							"path": ["files", "{{fileId}}", "quotations"]
+						}
+					}
+				},
+				{
+					"name": "Finalize Quotation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/quotations/{{quotationId}}/finalize",
+							"host": ["{{baseUrl}}"],
+							"path": ["quotations", "{{quotationId}}", "finalize"]
+						}
+					}
+				},
+				{
+					"name": "Get File Quotations (with summary math)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/files/{{fileId}}/quotations",
+							"host": ["{{baseUrl}}"],
+							"path": ["files", "{{fileId}}", "quotations"]
+						}
+					}
+				},
+				{
+					"name": "Register Payment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"quotation_id\": {{quotationId}},\n  \"amount\": 25000.00,\n  \"payment_type\": \"ADVANCE\",\n  \"payment_date\": \"2026-08-19\",\n  \"payment_method\": \"UPI\",\n  \"reference_number\": \"UPI/129837192837\",\n  \"notes\": \"Advance payment received\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/files/{{fileId}}/payments",
+							"host": ["{{baseUrl}}"],
+							"path": ["files", "{{fileId}}", "payments"]
+						}
+					}
+				},
+				{
+					"name": "Get File Payments & Outstanding Balance",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/files/{{fileId}}/payments",
+							"host": ["{{baseUrl}}"],
+							"path": ["files", "{{fileId}}", "payments"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "6. Expenses & Dashboard",
+			"item": [
+				{
+					"name": "Create Expense",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"category\": \"OFFICE\",\n  \"amount\": 4500.00,\n  \"expense_date\": \"2026-08-19\",\n  \"description\": \"CAD Printing paper & stationary\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/expenses",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses"]
+						}
+					}
+				},
+				{
+					"name": "Get All Expenses",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/expenses",
+							"host": ["{{baseUrl}}"],
+							"path": ["expenses"]
+						}
+					}
+				},
+				{
+					"name": "Get Dashboard Summary",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/dashboard/summary",
+							"host": ["{{baseUrl}}"],
+							"path": ["dashboard", "summary"]
+						}
+					}
+				}
+			]
+		}
+	]
+}
