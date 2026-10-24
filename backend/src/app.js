@@ -21,10 +21,33 @@ const app = express();
 
 // Security & Parsing Middlewares
 app.use(helmet());
-app.use(cors({
-  origin: env.FRONTEND_URL,
-  credentials: true
-}));
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://deepdesigning.vercel.app',
+  'https://office-crm-six.vercel.app',
+  (env.FRONTEND_URL || '').replace(/\/$/, '')
+].filter(Boolean);
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow server-to-server requests or tools like Postman/cURL with no origin
+      if (!origin) return callback(null, true);
+
+      const cleanOrigin = origin.replace(/\/$/, '');
+
+      // Allow any .vercel.app preview deployment or matched configured origin
+      if (cleanOrigin.endsWith('.vercel.app') || allowedOrigins.includes(cleanOrigin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error('Blocked by CORS'));
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
