@@ -1,0 +1,6 @@
+MySQL hosting password:VqJ7DCCssg3Sa7Sb
+
+Generated! Password: 
+VqJ7DCCssg3Sa7Sb
+Password cannot be displayed next time for safety. Please keep it in a safe place.
+mysql://2cMxuiLAHjVCdbZ.root:VqJ7DCCssg3Sa7Sb@gateway01.ap-northeast-1.prod.aws.tidbcloud.com:4000/test?ssl={"rejectUnauthorized":true}

@@ -7,6 +7,12 @@ const dbConfig = {
   host: env.DB_HOST,
   port: parseInt(env.DB_PORT, 10),
   dialect: 'mysql',
+  dialectOptions: {
+    ssl: {
+      minVersion: 'TLSv1.2',
+      rejectUnauthorized: true
+    }
+  },
   logging: env.NODE_ENV === 'development' ? console.log : false,
   pool: {
     max: 5,
